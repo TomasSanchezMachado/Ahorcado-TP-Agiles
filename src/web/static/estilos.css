@@ -172,6 +172,15 @@ main[data-resultado="Ganaste"] .resultado {
   overflow-wrap: anywhere;
 }
 
+.solo-lectores {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
 @media (max-width: 480px) {
   body {
     padding: 1.5rem 0.75rem;

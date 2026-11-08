@@ -31,7 +31,8 @@
   <p class="dato">Falladas: <span class="falladas" data-testid="letras-falladas">{{ letras_falladas }}</span></p>
   <form method="get" action="/">
     <input type="hidden" name="word" value="{{ palabra }}" />
-    <input class="entrada" type="text" name="letra" placeholder="Escribí una letra" autofocus autocomplete="off" data-testid="letra-input" />
+    <label class="solo-lectores" for="letra">Letra</label>
+    <input class="entrada" id="letra" type="text" name="letra" placeholder="Escribí una letra" autofocus autocomplete="off" data-testid="letra-input" />
   </form>
   <p class="error" data-testid="error-message">{{ error }}</p>
   <p class="resultado" data-testid="resultado">{{ resultado }}</p>
