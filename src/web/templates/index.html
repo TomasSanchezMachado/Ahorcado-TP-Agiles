@@ -3,27 +3,45 @@
 
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Ahorcado</title>
+  <link rel="stylesheet" href="/static/estilos.css">
 </head>
 
 <body>
-  <p>Palabra: <span data-testid="word">{{ word }}</span></p>
-  <p>Intentos restantes: <span data-testid="intentos">{{ intentos }}</span></p>
-  <p>Letras usadas: <span data-testid="letras-usadas">{{ letras_usadas }}</span></p>
-  <p>Acertadas: <span data-testid="letras-acertadas">{{ letras_acertadas }}</span></p>
-  <p>Falladas: <span data-testid="letras-falladas">{{ letras_falladas }}</span></p>
+  <main data-resultado="{{ resultado }}">
+  <h1>Ahorcado</h1>
+  {% set fallos = 6 - intentos %}
+  <svg class="horca" viewBox="0 0 200 220" aria-hidden="true">
+    <line x1="20" y1="210" x2="120" y2="210" />
+    <line x1="70" y1="210" x2="70" y2="20" />
+    <line x1="70" y1="20" x2="140" y2="20" />
+    <line x1="140" y1="20" x2="140" y2="50" />
+    <circle class="fantasma" cx="140" cy="70" r="20" />
+    {% if fallos >= 2 %}<line x1="140" y1="90" x2="140" y2="140" />{% endif %}
+    {% if fallos >= 3 %}<line x1="140" y1="105" x2="115" y2="125" />{% endif %}
+    {% if fallos >= 4 %}<line x1="140" y1="105" x2="165" y2="125" />{% endif %}
+    {% if fallos >= 5 %}<line x1="140" y1="140" x2="120" y2="175" />{% endif %}
+    {% if fallos >= 6 %}<line x1="140" y1="140" x2="160" y2="175" />{% endif %}
+  </svg>
+  <p class="palabra"><span data-testid="word">{{ word }}</span></p>
+  <p class="dato intentos">Intentos restantes: <span data-testid="intentos">{{ intentos }}</span></p>
+  <p class="dato">Letras usadas: <span data-testid="letras-usadas">{{ letras_usadas }}</span></p>
+  <p class="dato">Acertadas: <span class="acertadas" data-testid="letras-acertadas">{{ letras_acertadas }}</span></p>
+  <p class="dato">Falladas: <span class="falladas" data-testid="letras-falladas">{{ letras_falladas }}</span></p>
   <form method="get" action="/">
     <input type="hidden" name="word" value="{{ palabra }}" />
-    <input type="text" name="letra" data-testid="letra-input" />
+    <input class="entrada" type="text" name="letra" placeholder="Escribí una letra" autofocus autocomplete="off" data-testid="letra-input" />
   </form>
-  <p data-testid="error-message">{{ error }}</p>
-  <p data-testid="resultado">{{ resultado }}</p>
-  <p data-testid="palabra-revelada">{{ palabra_revelada }}</p>
+  <p class="error" data-testid="error-message">{{ error }}</p>
+  <p class="resultado" data-testid="resultado">{{ resultado }}</p>
+  <p class="revelada" data-testid="palabra-revelada">{{ palabra_revelada }}</p>
   {% if resultado %}
   <form method="get" action="/nueva">
-    <button type="submit" data-testid="jugar-de-nuevo">Jugar de nuevo</button>
+    <button class="boton" type="submit" data-testid="jugar-de-nuevo">Jugar de nuevo</button>
   </form>
   {% endif %}
+  </main>
 </body>
 
 </html>
