@@ -4,45 +4,323 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Ahorcado</title>
+  <title>Ahorcado · Aguas Profundas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700&family=Share+Tech+Mono&display=swap">
   <link rel="stylesheet" href="/static/estilos.css">
 </head>
 
 <body>
-  <main data-resultado="{{ resultado }}">
-  <h1>Ahorcado</h1>
   {% set fallos = 6 - intentos %}
-  <svg class="horca" viewBox="0 0 200 220" aria-hidden="true">
-    <line x1="20" y1="210" x2="120" y2="210" />
-    <line x1="70" y1="210" x2="70" y2="20" />
-    <line x1="70" y1="20" x2="140" y2="20" />
-    <line x1="140" y1="20" x2="140" y2="50" />
-    <circle class="fantasma" cx="140" cy="70" r="20" />
-    {% if fallos >= 2 %}<line x1="140" y1="90" x2="140" y2="140" />{% endif %}
-    {% if fallos >= 3 %}<line x1="140" y1="105" x2="115" y2="125" />{% endif %}
-    {% if fallos >= 4 %}<line x1="140" y1="105" x2="165" y2="125" />{% endif %}
-    {% if fallos >= 5 %}<line x1="140" y1="140" x2="120" y2="175" />{% endif %}
-    {% if fallos >= 6 %}<line x1="140" y1="140" x2="160" y2="175" />{% endif %}
+  {% set acertadas = letras_acertadas.split(" ") if letras_acertadas else [] %}
+  {% set falladas = letras_falladas.split(" ") if letras_falladas else [] %}
+  <div class="nieve-marina" aria-hidden="true"></div>
+  <div class="burbujas-fondo" aria-hidden="true">{% for _ in range(14) %}<i></i>{% endfor %}</div>
+
+  <main class="cabina" data-resultado="{{ resultado }}" data-fallos="{{ fallos }}"
+        data-aciertos="{{ acertadas | length }}" data-usadas="{{ (acertadas | length) + (falladas | length) }}"
+        data-error="{{ 'si' if error else '' }}">
+  <div class="alarma" aria-hidden="true"></div>
+
+  <header class="encabezado">
+    <div>
+      <p class="sistema"><span class="baliza" aria-hidden="true"></span>MINISUB ABISAL-06 · RESCATE EN CURSO</p>
+      <h1>Ahorcado</h1>
+    </div>
+    <div class="control-sonido">
+      <label class="solo-lectores" for="volumen">Volumen</label>
+      <input class="volumen" id="volumen" type="range" min="0" max="100" step="5" value="70" title="Volumen">
+      <button class="sonido" type="button" id="sonido" aria-pressed="true" title="Activar o silenciar sonidos">
+        <span class="sonido-on" aria-hidden="true">🔊</span><span class="sonido-off" aria-hidden="true">🔇</span>
+        <span class="solo-lectores">Sonido</span>
+      </button>
+    </div>
+  </header>
+
+  <div class="columna-vista">
+  <div class="escotilla-contenedor">
+  <svg class="escotilla" viewBox="0 0 300 200" aria-hidden="true">
+    <defs>
+      <radialGradient id="interior" cx="50%" cy="20%" r="80%">
+        <stop offset="0" stop-color="#2c4a52" />
+        <stop offset="0.55" stop-color="#132a31" />
+        <stop offset="1" stop-color="#071318" />
+      </radialGradient>
+      <radialGradient id="brillo" cx="35%" cy="25%" r="50%">
+        <stop offset="0" stop-color="#ffffff" stop-opacity="0.22" />
+        <stop offset="1" stop-color="#ffffff" stop-opacity="0" />
+      </radialGradient>
+      <linearGradient id="agua" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#3ff5e0" stop-opacity="0.55" />
+        <stop offset="0.15" stop-color="#11707a" stop-opacity="0.6" />
+        <stop offset="1" stop-color="#04252c" stop-opacity="0.85" />
+      </linearGradient>
+      <filter id="resplandor" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="3" result="b" />
+        <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
+      </filter>
+      <clipPath id="vidrio"><circle cx="150" cy="100" r="86" /></clipPath>
+      <symbol id="pez" viewBox="0 0 60 40">
+        <path class="silueta" d="M10 20 Q25 2 45 14 L58 6 L54 20 L58 34 L45 26 Q25 38 10 20Z" />
+        <path class="dientes" d="M10 20 l3 2 l2 -3 l2 3 l2 -3 l2 2" />
+        <path class="antena" d="M15 13 Q12 1 4 5" />
+        <circle class="luz" cx="4" cy="5" r="2.6" />
+        <circle class="ojo" cx="18" cy="16" r="1.6" />
+      </symbol>
+      <symbol id="medusa" viewBox="0 0 40 50">
+        <path class="campana" d="M4 20 Q20 -4 36 20 Q28 17 20 20 Q12 17 4 20Z" />
+        <path class="tentaculos" d="M10 20 q-3 10 2 20 M17 20 q3 12 -2 26 M24 20 q-3 12 2 24 M31 20 q3 10 -2 18" />
+      </symbol>
+      <symbol id="ojos" viewBox="0 0 30 12">
+        <ellipse class="sombra-ojos" cx="15" cy="6" rx="15" ry="6" />
+        <circle class="luz" cx="8" cy="6" r="3" />
+        <circle class="luz" cx="22" cy="6" r="3" />
+      </symbol>
+    </defs>
+
+    <circle class="pulso-sonar" cx="150" cy="100" r="90" />
+    <circle class="pulso-sonar p2" cx="150" cy="100" r="90" />
+
+    <!-- Interior de la cabina, visto a través del ojo de buey -->
+    <g clip-path="url(#vidrio)">
+      <rect width="300" height="200" fill="url(#interior)" />
+      <rect class="luz-emergencia" width="300" height="200" />
+      <g class="tablero">
+        <rect x="70" y="40" width="22" height="14" rx="2" />
+        <rect x="208" y="40" width="22" height="14" rx="2" />
+        <circle class="led l1" cx="76" cy="47" r="2" />
+        <circle class="led l2" cx="86" cy="47" r="2" />
+        <circle class="led l3" cx="214" cy="47" r="2" />
+        <circle class="led l4" cx="224" cy="47" r="2" />
+      </g>
+
+      <g class="persona">
+        <g class="brazos-arriba">
+          <path class="traje" d="M112 160 Q96 130 88 96 L100 92 Q110 124 126 148 Z" />
+          <path class="traje" d="M188 160 Q204 130 212 96 L200 92 Q190 124 174 148 Z" />
+          <circle class="piel" cx="92" cy="90" r="7" />
+          <circle class="piel" cx="208" cy="90" r="7" />
+        </g>
+        <path class="traje" d="M92 205 Q96 152 128 140 L172 140 Q204 152 208 205 Z" />
+        <path class="traje-cuello" d="M132 140 L150 156 L168 140" />
+        <rect class="parche" x="176" y="160" width="14" height="10" rx="2" />
+        <rect class="piel" x="141" y="114" width="18" height="28" rx="6" />
+        <g class="cabeza">
+          <circle class="piel" cx="122" cy="94" r="5.5" />
+          <circle class="piel" cx="178" cy="94" r="5.5" />
+          <circle class="piel cara-base" cx="150" cy="92" r="28" />
+          <path class="pelo" d="M121 90 Q118 60 150 60 Q182 60 179 90 Q173 72 152 71 Q136 72 128 78 Q124 84 121 90Z" />
+          <path class="auricular" d="M119 94 Q118 55 150 55 Q182 55 181 94" />
+          <rect class="auricular-copa" x="113" y="86" width="9" height="17" rx="3" />
+          <rect class="auricular-copa" x="178" y="86" width="9" height="17" rx="3" />
+          <path class="microfono" d="M119 102 Q124 116 137 113" />
+          <circle class="microfono-punta" cx="138" cy="113" r="2.2" />
+          <circle class="mejilla" cx="133" cy="102" r="4" />
+          <circle class="mejilla" cx="167" cy="102" r="4" />
+
+          <!-- Caras: se muestra una sola según el estado (ver estilos.css) -->
+          <g class="cara cara-tranquila">
+            <circle class="ojo-p" cx="139" cy="91" r="3" />
+            <circle class="ojo-p" cx="161" cy="91" r="3" />
+            <path class="ceja" d="M133 83 Q139 80 145 83 M155 83 Q161 80 167 83" />
+            <path class="boca" d="M141 104 Q150 111 159 104" />
+          </g>
+          <g class="cara cara-preocupada">
+            <circle class="ojo-p" cx="139" cy="92" r="3" />
+            <circle class="ojo-p" cx="161" cy="92" r="3" />
+            <path class="ceja" d="M133 84 L145 80 M167 84 L155 80" />
+            <path class="boca" d="M141 107 Q145 104 150 107 Q155 110 159 107" />
+          </g>
+          <g class="cara cara-asustada">
+            <circle class="ojo-blanco" cx="139" cy="91" r="5" />
+            <circle class="ojo-blanco" cx="161" cy="91" r="5" />
+            <circle class="ojo-p" cx="139" cy="92" r="2.2" />
+            <circle class="ojo-p" cx="161" cy="92" r="2.2" />
+            <path class="ceja" d="M132 81 L145 77 M168 81 L155 77" />
+            <ellipse class="boca-abierta" cx="150" cy="108" rx="4.5" ry="5.5" />
+            <path class="gota" d="M176 74 Q172 82 176 84 Q180 82 176 74Z" />
+          </g>
+          <g class="cara cara-aterrada">
+            <circle class="ojo-blanco" cx="139" cy="90" r="6" />
+            <circle class="ojo-blanco" cx="161" cy="90" r="6" />
+            <circle class="ojo-p" cx="139" cy="91" r="1.8" />
+            <circle class="ojo-p" cx="161" cy="91" r="1.8" />
+            <path class="ceja" d="M131 80 L145 74 M169 80 L155 74" />
+            <path class="boca-abierta" d="M140 104 Q150 100 160 104 L158 114 Q150 118 142 114 Z" />
+            <path class="dientes-boca" d="M142 105 L158 105" />
+            <path class="lagrima" d="M135 97 Q133 104 135 106 Q137 104 135 97Z" />
+            <path class="lagrima" d="M165 97 Q163 104 165 106 Q167 104 165 97Z" />
+            <path class="gota" d="M177 72 Q173 80 177 82 Q181 80 177 72Z" />
+          </g>
+          <g class="cara cara-contenta">
+            <path class="ojo-cerrado" d="M134 92 Q139 86 144 92 M156 92 Q161 86 166 92" />
+            <path class="ceja" d="M133 81 Q139 77 145 81 M155 81 Q161 77 167 81" />
+            <path class="boca-abierta" d="M140 102 Q150 116 160 102 Z" />
+          </g>
+          <g class="cara cara-shock">
+            <circle class="ojo-blanco" cx="139" cy="90" r="6.5" />
+            <circle class="ojo-blanco" cx="161" cy="90" r="6.5" />
+            <circle class="ojo-p" cx="139" cy="90" r="1.6" />
+            <circle class="ojo-p" cx="161" cy="90" r="1.6" />
+            <path class="ceja" d="M131 78 L145 75 M169 78 L155 75" />
+            <ellipse class="boca-abierta" cx="150" cy="109" rx="6.5" ry="8" />
+          </g>
+          <g class="cara cara-feliz">
+            <path class="ojo-cerrado" d="M133 92 Q139 84 145 92 M155 92 Q161 84 167 92" />
+            <path class="ceja" d="M133 80 Q139 76 145 80 M155 80 Q161 76 167 80" />
+            <path class="boca-abierta" d="M137 101 Q150 120 163 101 Z" />
+            <path class="lengua" d="M145 109 Q150 114 155 109 Q150 107 145 109Z" />
+          </g>
+          <g class="cara cara-ahogada">
+            <path class="ojo-x" d="M135 87 L143 95 M143 87 L135 95 M157 87 L165 95 M165 87 L157 95" />
+            <ellipse class="boca-abierta" cx="150" cy="108" rx="3.5" ry="4" />
+          </g>
+        </g>
+      </g>
+
+      <!-- Agua que va inundando la cabina con cada fallo -->
+      <g class="agua" style="--nivel: {{ [200, 182, 165, 148, 134, 116, 58][fallos] }}px">
+        <path class="ola o1" d="M0 0 Q25 -6 50 0 T100 0 T150 0 T200 0 T250 0 T300 0 T350 0 T400 0 T450 0 T500 0 T550 0 T600 0 V220 H0 Z" />
+        <path class="ola o2" d="M0 3 Q30 -4 60 3 T120 3 T180 3 T240 3 T300 3 T360 3 T420 3 T480 3 T540 3 T600 3 V220 H0 Z" />
+        {% if fallos >= 6 %}
+        <circle class="burbuja-ahogo" cx="152" cy="40" r="3" />
+        <circle class="burbuja-ahogo b2" cx="147" cy="40" r="2" />
+        <circle class="burbuja-ahogo b3" cx="155" cy="40" r="1.6" />
+        {% endif %}
+      </g>
+
+      <circle class="reflejo" cx="150" cy="100" r="86" fill="url(#brillo)" />
+      <g class="grietas">
+        {% if fallos >= 1 %}<path d="M226 56 L205 68 L198 62 L182 78 M205 68 L210 84" />{% endif %}
+        {% if fallos >= 2 %}<path d="M67 130 L88 122 L95 130 L114 118 M88 122 L84 106" />{% endif %}
+        {% if fallos >= 3 %}<path d="M135 14 L140 36 L131 44 L138 62 M140 36 L156 42" />{% endif %}
+        {% if fallos >= 4 %}<path d="M180 183 L172 160 L182 150 L170 132 M172 160 L154 164" />{% endif %}
+        {% if fallos >= 5 %}<path d="M67 70 L90 78 L94 70 L116 82 M90 78 L86 94" />{% endif %}
+        {% if fallos >= 6 %}<path d="M150 100 L118 68 M150 100 L190 80 M150 100 L164 142 M150 100 L110 126 M150 100 L150 56 M150 100 L196 118" /><circle cx="150" cy="100" r="7" />{% endif %}
+      </g>
+    </g>
+
+    <circle class="marco" cx="150" cy="100" r="90" />
+    <circle class="marco-interior" cx="150" cy="100" r="86" />
+    {% for x, y in [(240, 100), (213.6, 163.6), (150, 190), (86.4, 163.6), (60, 100), (86.4, 36.4), (150, 10), (213.6, 36.4)] %}
+    <circle class="remache" cx="{{ x }}" cy="{{ y }}" r="3" />
+    {% endfor %}
+
+    <!-- Afuera, en el agua: burbujas y criaturas que rodean la nave -->
+    <g class="burbujas-vidrio">
+      {% for x, r in [(30, 2.5), (52, 1.6), (250, 3), (272, 1.8), (290, 2.4), (14, 1.4), (240, 2), (60, 3.2)] %}
+      <circle cx="{{ x }}" cy="210" r="{{ r }}" />
+      {% endfor %}
+    </g>
+    <g class="criaturas" filter="url(#resplandor)">
+      <use class="cardumen" href="#ojos" x="-40" y="6" width="14" height="6" />
+      {% if fallos >= 1 %}<use class="criatura c1" href="#ojos" x="12" y="30" width="30" height="12" />{% endif %}
+      {% if fallos >= 2 %}<use class="criatura c2" href="#medusa" x="250" y="14" width="38" height="48" />{% endif %}
+      {% if fallos >= 3 %}<use class="criatura c3" href="#pez" x="226" y="118" width="70" height="47" />{% endif %}
+      {% if fallos >= 4 %}<use class="criatura c4" href="#ojos" x="20" y="168" width="26" height="10" />{% endif %}
+      {% if fallos >= 5 %}<use class="criatura c5" href="#medusa" x="8" y="68" width="32" height="40" />{% endif %}
+      {% if fallos >= 6 %}<g transform="translate(86 112) scale(-1 1)"><use class="criatura c6" href="#pez" x="0" y="0" width="84" height="56" /></g>{% endif %}
+    </g>
   </svg>
-  <p class="palabra"><span data-testid="word">{{ word }}</span></p>
-  <p class="dato intentos">Intentos restantes: <span data-testid="intentos">{{ intentos }}</span></p>
-  <p class="dato">Letras usadas: <span data-testid="letras-usadas">{{ letras_usadas }}</span></p>
-  <p class="dato">Acertadas: <span class="acertadas" data-testid="letras-acertadas">{{ letras_acertadas }}</span></p>
-  <p class="dato">Falladas: <span class="falladas" data-testid="letras-falladas">{{ letras_falladas }}</span></p>
-  <form method="get" action="/">
+  <div class="causticas" aria-hidden="true"></div>
+  </div>
+
+  <section class="vidas" aria-label="Vidas">
+    <p class="etiqueta">Vidas</p>
+    <div class="corazones" aria-hidden="true">
+      {% for n in range(6) %}
+      <svg class="corazon{% if n >= intentos %} perdida{% endif %}{% if n == intentos - 1 and intentos == 1 %} ultima{% endif %}" viewBox="0 0 24 22" data-indice="{{ n }}" style="--i: {{ n }}">
+        <path d="M12 21 C5 15.5 1 11.8 1 7.2 C1 3.8 3.6 1.2 7 1.2 C9 1.2 10.9 2.2 12 3.8 C13.1 2.2 15 1.2 17 1.2 C20.4 1.2 23 3.8 23 7.2 C23 11.8 19 15.5 12 21Z" />
+        <path class="quiebre" d="M12 3.8 L10.5 8 L13 10.5 L11 14 L12.5 17" />
+      </svg>
+      {% endfor %}
+    </div>
+    <p class="contador"><span data-testid="intentos">{{ intentos }}</span><small>/6</small></p>
+  </section>
+
+  <section class="instrumentos" aria-hidden="true">
+    <div class="instrumento oxigeno">
+      <p class="etiqueta">Oxígeno</p>
+      <div class="tanque"><i style="height: {{ (intentos / 6 * 100) | round }}%"></i></div>
+      <p class="lectura">{{ (intentos / 6 * 100) | round | int }} <small>%</small></p>
+    </div>
+    <div class="instrumento presion">
+      <p class="etiqueta">Presión</p>
+      <svg class="dial" viewBox="0 0 60 36">
+        <path class="dial-arco" d="M6 32 A24 24 0 0 1 54 32" />
+        <path class="dial-peligro" d="M46 15 A24 24 0 0 1 54 32" />
+        <line class="aguja" x1="30" y1="32" x2="30" y2="12" style="--angulo: {{ -90 + fallos * 30 }}deg" />
+        <circle class="eje" cx="30" cy="32" r="2.5" />
+      </svg>
+      <p class="lectura">{{ 400 + fallos * 150 }} <small>atm</small></p>
+    </div>
+    <div class="instrumento sonar">
+      <p class="etiqueta">Sonar</p>
+      <div class="radar">
+        <i class="barrido"></i>
+        {% for n in range(fallos) %}<i class="blip b{{ n + 1 }}"></i>{% endfor %}
+      </div>
+      <p class="lectura">{{ fallos }} <small>contactos</small></p>
+    </div>
+  </section>
+  </div>
+
+  <div class="columna-control">
+  <section class="transmision">
+    <p class="canal">
+      <span class="punto" aria-hidden="true"></span>
+      Transmisión interceptada · <strong>{{ word.split(" ") | length }} letras</strong>
+    </p>
+    <div class="palabra">
+      <span class="solo-lectores" data-testid="word">{{ word }}</span>
+      <div class="casilleros" aria-hidden="true">
+        {% for letra in word.split(" ") %}<span class="casillero{% if letra != '_' %} llena{% endif %}" style="--i: {{ loop.index0 }}"><b>{{ letra if letra != '_' else '' }}</b></span>{% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <dl class="bitacora">
+    <div class="dato"><dt>Letras usadas</dt><dd data-testid="letras-usadas">{{ letras_usadas }}</dd></div>
+    <div class="dato"><dt>Acertadas</dt><dd class="acertadas" data-testid="letras-acertadas">{{ letras_acertadas }}</dd></div>
+    <div class="dato"><dt>Falladas</dt><dd class="falladas" data-testid="letras-falladas">{{ letras_falladas }}</dd></div>
+  </dl>
+
+  <p class="error" data-testid="error-message">{{ error }}</p>
+
+  <section class="final">
+    <p class="resultado" data-testid="resultado">{{ resultado }}</p>
+    {% if resultado == "Ganaste" %}<p class="subtitulo">¡Rescate exitoso! La tripulación está a salvo.</p>{% endif %}
+    {% if resultado == "Perdiste" %}<p class="subtitulo">La cabina se inundó. La señal decía:</p>{% endif %}
+    <p class="revelada" data-testid="palabra-revelada">{{ palabra_revelada }}</p>
+    {% if resultado %}
+    <form method="get" action="/nueva">
+      <button class="boton" type="submit" data-testid="jugar-de-nuevo">Jugar de nuevo</button>
+    </form>
+    {% endif %}
+  </section>
+
+  <form method="get" action="/" class="form-letra">
     <input type="hidden" name="word" value="{{ palabra }}" />
     <label class="solo-lectores" for="letra">Letra</label>
-    <input class="entrada" id="letra" type="text" name="letra" placeholder="Escribí una letra" autofocus autocomplete="off" data-testid="letra-input" />
+    <input class="entrada" id="letra" type="text" name="letra" placeholder="Ingresá una letra para descifrar" autofocus autocomplete="off" data-testid="letra-input" />
   </form>
-  <p class="error" data-testid="error-message">{{ error }}</p>
-  <p class="resultado" data-testid="resultado">{{ resultado }}</p>
-  <p class="revelada" data-testid="palabra-revelada">{{ palabra_revelada }}</p>
-  {% if resultado %}
-  <form method="get" action="/nueva">
-    <button class="boton" type="submit" data-testid="jugar-de-nuevo">Jugar de nuevo</button>
+
+  <form method="get" action="/" class="teclado" aria-label="Teclado">
+    {% for fila in ["QWERTYUIOP", "ASDFGHJKLÑ", "ZXCVBNM"] %}
+    {% set nfila = loop.index0 %}
+    <div class="fila">
+      {% for l in fila %}
+      {% set estado = "acierto" if l in acertadas else ("fallo" if l in falladas else "") %}
+      <button class="tecla {{ estado }}" type="submit" name="letra" value="{{ l }}" data-letra="{{ l }}" style="--i: {{ nfila * 10 + loop.index0 }}" {% if estado or resultado %}disabled{% endif %}>{{ l }}</button>
+      {% endfor %}
+    </div>
+    {% endfor %}
   </form>
-  {% endif %}
+  </div>
   </main>
+
+  <script src="/static/cabina.js"></script>
 </body>
 
 </html>
