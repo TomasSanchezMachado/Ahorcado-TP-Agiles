@@ -63,3 +63,4 @@ Característica: Jugar de nuevo
     Y el jugador ingresa la letra "N"
     Y el jugador aprieta el botón "Jugar de nuevo"
     Entonces la palabra de la partida no es "GATO"
+    Y la palabra de la partida no aparece en la URL

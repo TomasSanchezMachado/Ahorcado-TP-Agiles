@@ -18,6 +18,15 @@ def entonces_no_hay_letras_reveladas(page):
 def entonces_no_hay_resultado(page):
     assert page.get_by_test_id("resultado").text_content(timeout=2000) == ""
 
+def _palabra_en_sesion(page, app):
+    cookie = next(c for c in page.context.cookies() if c["name"] == "session")
+    _, datos = app.session_interface.get_signing_serializer(app).loads_unsafe(cookie["value"])
+    return datos["palabra"]
+
 @then(parsers.parse('la palabra de la partida no es "{palabra}"'))
-def entonces_palabra_distinta(page, palabra):
-    assert page.locator('input[name="word"]').input_value() != palabra
+def entonces_palabra_distinta(page, app, palabra):
+    assert _palabra_en_sesion(page, app) != palabra
+
+@then("la palabra de la partida no aparece en la URL")
+def entonces_palabra_no_en_url(page, app):
+    assert _palabra_en_sesion(page, app) not in page.url.upper()
