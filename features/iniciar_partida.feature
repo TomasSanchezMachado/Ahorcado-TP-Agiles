@@ -11,6 +11,7 @@ Característica: Iniciar partida
     Dado una partida con la palabra "GATO"
     Entonces se ve la palabra "_ _ _ _"
 
+  @CA-1
   Escenario: El jugador inicia una partida con una palabra más larga
     Dado una partida con la palabra "PERRO"
     Entonces se ve la palabra "_ _ _ _ _"
