@@ -76,6 +76,8 @@ Quedan fuera del MVP (Release 2 y 3): configuración de dificultad/idioma/catego
 - [x] **CI: ejecución de Acceptance Tests** contra el ambiente desplegado.
 - [x] **Análisis Estático de Código** (SonarQube/SonarCloud o equivalente).
 
+> **Pipeline CI/CD (Entregable §5.3):** [Ver última ejecución exitosa]https://github.com/TomasSanchezMachado/Ahorcado-TP-Agiles/actions/runs/43127003792
+
 ## Stack tecnológico
 
 - **Lenguaje:** Python
