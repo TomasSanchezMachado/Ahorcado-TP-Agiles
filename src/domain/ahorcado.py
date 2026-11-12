@@ -55,3 +55,6 @@ class Ahorcado:
 
     def letras_falladas(self):
         return self._letras_formateadas(l for l in self.letras_arriesgadas if l not in self.palabra)
+
+    def fallos(self):
+        return 6 - self.intentos_restantes
